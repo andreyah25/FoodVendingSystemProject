@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35825.156 d17.13
+VisualStudioVersion = 17.13.35825.156
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodVendingSystem", "FoodVendingSystem.csproj", "{304C17A8-F104-4B94-9031-ECF6FAAAA71C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodVending_BusinessDataLogic", "FoodVending_BusinessDataLogic\FoodVending_BusinessDataLogic.csproj", "{47C71E7C-1D1A-41FF-9CD5-353EDE88DAF9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{304C17A8-F104-4B94-9031-ECF6FAAAA71C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{304C17A8-F104-4B94-9031-ECF6FAAAA71C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{304C17A8-F104-4B94-9031-ECF6FAAAA71C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47C71E7C-1D1A-41FF-9CD5-353EDE88DAF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47C71E7C-1D1A-41FF-9CD5-353EDE88DAF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47C71E7C-1D1A-41FF-9CD5-353EDE88DAF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47C71E7C-1D1A-41FF-9CD5-353EDE88DAF9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

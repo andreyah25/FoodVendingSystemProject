@@ -7,4 +7,17 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="FoodVending_BusinessDataLogic\**" />
+    <Compile Remove="VendingSystem_BusinessDataLogic\**" />
+    <EmbeddedResource Remove="FoodVending_BusinessDataLogic\**" />
+    <EmbeddedResource Remove="VendingSystem_BusinessDataLogic\**" />
+    <None Remove="FoodVending_BusinessDataLogic\**" />
+    <None Remove="VendingSystem_BusinessDataLogic\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="FoodVending_BusinessDataLogic\FoodVending_BusinessDataLogic.csproj" />
+  </ItemGroup>
+
 </Project>
