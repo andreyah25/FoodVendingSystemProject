@@ -10,20 +10,23 @@ namespace FoodVendingMachine
             Console.WriteLine("WELCOME.");
             Console.WriteLine("Insert your card.");
 
+            //loop
             while (!AuthenticateUser())
             {
                 Console.WriteLine("Incorrect PIN. Try Again.");
             }
-
+            
             bool continueTransaction = true;
             while (continueTransaction)
             {
                 DisplayMenu();
                 ProcessUserSelection();
-
-                Console.WriteLine("Would you like to choose again? (Yes or No): ");
+                //loop
+                Console.WriteLine("*********************************");
+                Console.WriteLine("Would you like to choose again? (Yes or No): "); 
                 string answer = Console.ReadLine().ToLower();
                 continueTransaction = (answer == "yes" || answer == "y");
+                Console.WriteLine("*********************************");
             }
 
             Console.WriteLine("Thank you for purchasing in the vending machine.");
@@ -39,16 +42,14 @@ namespace FoodVendingMachine
             }
             return false;
         }
-
         // Displays menu items
         static void DisplayMenu()
         {
             Console.WriteLine("Snacks and Drinks: ");
             Console.WriteLine("[1] Piattos - $1.29\n[2] VCut - $2.07\n[3] Cheesy - $1.78\n" +
-                              "[4] Pic A - $3.45\n[5] Royal - $2.99\n[6] Mountain Dew - $2.56\n" +
-                              "[7] CHECK BALANCE\n[8] ADD FUNDS\n[9] CANCEL\n");
+                              "[4] Pic A - $3.45\n[5] Royal - $2.99\n[6] Mountain Dew - $2.56\n" 
+                              + "[7] CHECK BALANCE\n[8] ADD FUNDS\n[9] CANCEL");
         }
-
         // Processes user selection and calls the business logic
         static void ProcessUserSelection()
         {
@@ -76,7 +77,7 @@ namespace FoodVendingMachine
                         HandlePurchase("Mountain Dew", 2.56);
                         break;
                     case 7:
-                        Console.WriteLine($"Your current balance is: ${VendingProcess.GetBalance():F2}"); //F2(fixed point number for 2 decimal places
+                        Console.WriteLine($"Your current balance is: ${VendingProcess.GetBalance():F2}"); //F2(fixed point number for 2 decimal places)
                         break;
                     case 8:
                         HandleAddingFunds();
