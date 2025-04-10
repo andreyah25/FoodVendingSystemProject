@@ -5,7 +5,9 @@ VisualStudioVersion = 17.13.35825.156
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodVendingSystem", "FoodVendingSystem.csproj", "{304C17A8-F104-4B94-9031-ECF6FAAAA71C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodVending_BusinessDataLogic", "FoodVending_BusinessDataLogic\FoodVending_BusinessDataLogic.csproj", "{47C71E7C-1D1A-41FF-9CD5-353EDE88DAF9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodVending_BusinessLogic", "FoodVending_BusinessDataLogic\FoodVending_BusinessLogic.csproj", "{47C71E7C-1D1A-41FF-9CD5-353EDE88DAF9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodVendingData", "FoodVendingData\FoodVendingData.csproj", "{708C2584-4218-4606-BDCB-E6F05CC33D8A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{47C71E7C-1D1A-41FF-9CD5-353EDE88DAF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47C71E7C-1D1A-41FF-9CD5-353EDE88DAF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47C71E7C-1D1A-41FF-9CD5-353EDE88DAF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{708C2584-4218-4606-BDCB-E6F05CC33D8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{708C2584-4218-4606-BDCB-E6F05CC33D8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{708C2584-4218-4606-BDCB-E6F05CC33D8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{708C2584-4218-4606-BDCB-E6F05CC33D8A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
