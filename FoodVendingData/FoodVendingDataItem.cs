@@ -32,8 +32,8 @@ namespace FoodVendingData
                 return $"{itemNames[index]} - PHP {itemPrices[index]:F2} (Stock: {itemQuantities[index]})";
             }
             return "Item not found..";
-            
+
         }
-       
+
     }
 }

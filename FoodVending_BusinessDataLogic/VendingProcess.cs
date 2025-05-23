@@ -1,49 +1,110 @@
-﻿using FoodVendingData; // Add this at the top to access shared data
+﻿using VendingCommon;
+using FoodVendingData;
+using System;
+using System.Collections.Generic;
 
 namespace VendingSystem_BusinessDataLogic
 {
     public class VendingProcess
     {
-        private static double cardBalance = 100.00;
+        private IFoodVendingDataService dataService;
+        private double cardBalance = 100.00;
+        public double GetBalance() => cardBalance;
 
-        public static bool ValidateAdminPIN(int adminPIN) => adminPIN == FoodVendingDataItem.ownerPIN;
-
-        public static bool ValidatePIN(int userPIN) => userPIN == FoodVendingDataItem.correctPIN;
-
-        public static string[] GetItemDetails(string itemNumber)
+        public VendingProcess()
         {
-            if (int.TryParse(itemNumber, out int index))
+            dataService = new TextFileDataService();
+        }
+
+        public bool ValidateAdminPIN(int adminPIN) => adminPIN == 1234;
+
+        public bool ValidatePIN(int userPIN) => userPIN == 2005;
+
+        public bool IsItemInStock(string name)
+        {
+            var inventory = dataService.GetInventory();
+            var item = inventory.Find(i => i.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            return item != null && item.Quantity > 0;
+        }
+
+        public string[] GetInventoryDetails()
+        {
+            var inventory = dataService.GetInventory();
+            if (inventory.Count == 0)
+                return new[] { "No items available." };
+
+            var details = new List<string>();
+            foreach (var item in inventory)
             {
-                index -= 1;
-                if (index >= 0 && index < FoodVendingDataItem.itemNames.Count)
+                details.Add($"{item.Name} - PHP {item.Price:F2} (Stock: {item.Quantity})");
+            }
+            return details.ToArray();
+        }
+
+        public bool RestockItem(string name, int quantity)
+        {
+            var inventory = dataService.GetInventory();
+            var item = inventory.Find(i => i.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+
+            if (item != null && quantity > 0)
+            {
+                item.Quantity += quantity;
+                dataService.UpdateQuantity(item);
+                return true;
+            }
+            return false;
+        }
+
+        public bool AddNewItem(string name, double price, int quantity)
+        {
+            if (!string.IsNullOrWhiteSpace(name) && price > 0 && quantity > 0)
+            {
+                var existing = dataService.GetInventory().Find(i => i.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+                if (existing == null)
                 {
-                    return new string[]
-                    {
-                        FoodVendingDataItem.itemNames[index],
-                        FoodVendingDataItem.itemPrices[index].ToString("F2")
-                    };
+                    var newItem = new VendingItem { Name = name, Price = price, Quantity = quantity };
+                    dataService.AddSnack(newItem);
+                    return true;
                 }
             }
-            return null;
+            return false;
         }
 
-        public static bool SufficientBalance(double price) => cardBalance >= price;
-
-        public static (bool success, double remainingBalance) ProcessPurchase(string itemName, double price)
+        public bool DeleteItem(string name)
         {
-            int index = FoodVendingDataItem.itemNames.IndexOf(itemName);
-            if (index != -1 && FoodVendingDataItem.itemQuantities[index] > 0 && SufficientBalance(price))
+            var inventory = dataService.GetInventory();
+            var item = inventory.Find(i => i.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            if (item != null)
             {
-                FoodVendingDataItem.itemQuantities[index]--;
-                cardBalance -= price;
-                return (true, cardBalance);
+                dataService.RemoveItem(item);
+                return true;
             }
-            return (false, cardBalance);
+            return false;
         }
 
-        public static double GetBalance() => cardBalance;
+        public string SearchItem(string name)
+        {
+            return dataService.SearchItem(name);
+        }
 
-        public static bool AddFunds(double amount)
+        public bool PurchaseItem(string name)
+        {
+            var inventory = dataService.GetInventory();
+            var item = inventory.Find(i => i.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+
+            if (item != null && item.Quantity > 0 && cardBalance >= item.Price)
+            {
+                item.Quantity--;
+                cardBalance -= item.Price;
+                dataService.UpdateQuantity(item);
+                return true;
+            }
+
+            return false;
+        }
+
+
+        public bool AddFunds(double amount)
         {
             if (amount > 0)
             {
@@ -51,63 +112,6 @@ namespace VendingSystem_BusinessDataLogic
                 return true;
             }
             return false;
-        }
-
-        public static bool IsItemInStock(string itemName)
-        {
-            int index = FoodVendingDataItem.itemNames.IndexOf(itemName);
-            return index != -1 && FoodVendingDataItem.itemQuantities[index] > 0;
-        }
-        //READ
-        public static string[] GetInventory()
-        {
-            string[] inventory = new string[FoodVendingDataItem.itemNames.Count];
-            for (int i = 0; i < inventory.Length; i++)
-            {
-                inventory[i] = $"{FoodVendingDataItem.itemNames[i]} - PHP {FoodVendingDataItem.itemPrices[i]:F2} (Stock: {FoodVendingDataItem.itemQuantities[i]})";
-            }
-            return inventory;
-        }
-        //UPADTE
-        public static bool RestockItems(string itemName, int quantity)
-        {
-            int index = FoodVendingDataItem.itemNames.IndexOf(itemName);
-            if (index != -1 && quantity > 0)
-            {
-                FoodVendingDataItem.itemQuantities[index] += quantity;
-                return true;
-            }
-            return false;
-        }
-        //CREATE
-        public static bool AddSnack(string name, double price, int quantity)
-        {
-            if (!string.IsNullOrWhiteSpace(name) && price > 0 && quantity > 0)
-            {
-                FoodVendingDataItem.itemNames.Add(name);
-                FoodVendingDataItem.itemPrices.Add(price);
-                FoodVendingDataItem.itemQuantities.Add(quantity);
-                return true;
-            }
-            return false;
-        }
-        //DELETE
-        public static bool DeleteSnack(string name)
-        {
-            int index = FoodVendingDataItem.itemNames.FindIndex(n => n.Equals(name, StringComparison.OrdinalIgnoreCase));
-
-            if (index == -1)
-            {
-                return FoodVendingDataItem.RemoveSnackFromInventory(index);
-
-            }
-            return false;
-
-        }
-        //SEARCH 
-        public static string SearchSnack(string name)
-        {
-            return FoodVendingDataItem.SearchItemName(name);
         }
     }
 }

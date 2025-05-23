@@ -1,26 +1,34 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="FoodVendingData\**" />
-    <Compile Remove="FoodVending_BusinessDataLogic\**" />
-    <Compile Remove="VendingSystem_BusinessDataLogic\**" />
-    <EmbeddedResource Remove="FoodVendingData\**" />
-    <EmbeddedResource Remove="FoodVending_BusinessDataLogic\**" />
-    <EmbeddedResource Remove="VendingSystem_BusinessDataLogic\**" />
-    <None Remove="FoodVendingData\**" />
-    <None Remove="FoodVending_BusinessDataLogic\**" />
-    <None Remove="VendingSystem_BusinessDataLogic\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<!-- Remove compile/include of code files from referenced projects to avoid duplication -->
+		<Compile Remove="FoodVendingData\**" />
+		<Compile Remove="FoodVending_BusinessDataLogic\**" />
+		<Compile Remove="VendingSystem_BusinessDataLogic\**" />
+		<Compile Remove="VendingCommon\**" />
+		<EmbeddedResource Remove="FoodVendingData\**" />
+		<EmbeddedResource Remove="FoodVending_BusinessDataLogic\**" />
+		<EmbeddedResource Remove="VendingCommon\**" />
+		<None Remove="FoodVendingData\**" />
+		<None Remove="FoodVending_BusinessDataLogic\**" />
+		<None Remove="VendingCommon\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="FoodVending_BusinessDataLogic\FoodVending_BusinessLogic.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="FoodVending_BusinessDataLogic\FoodVending_BusinessLogic.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="inventory.txt">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 
 </Project>

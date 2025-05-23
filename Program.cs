@@ -1,14 +1,17 @@
-﻿using System;
-using VendingSystem_BusinessDataLogic;
+﻿using VendingSystem_BusinessDataLogic;
+using System;
 
 namespace FoodVendingMachine
 {
     public class Program
     {
+        static VendingProcess vending = new VendingProcess();
+
         static void Main(string[] args)
         {
             RunMachine();
         }
+
         static void RunMachine()
         {
             while (true)
@@ -16,9 +19,9 @@ namespace FoodVendingMachine
                 SelectUser();
             }
         }
+
         static void SelectUser()
         {
-            //MAIN MENU
             Console.WriteLine("WELCOME....");
             Console.WriteLine("Select a user: [1] Admin | [2] Customer | [0] EXIT");
             string user = Console.ReadLine();
@@ -40,10 +43,11 @@ namespace FoodVendingMachine
                     break;
             }
         }
+
         static void RunAdminMode()
         {
             Console.WriteLine("Enter Admin PIN: ");
-            if (int.TryParse(Console.ReadLine(), out int adminPIN) && VendingProcess.ValidateAdminPIN(adminPIN))
+            if (int.TryParse(Console.ReadLine(), out int adminPIN) && vending.ValidateAdminPIN(adminPIN))
             {
                 bool continueAdmin = true;
 
@@ -79,23 +83,24 @@ namespace FoodVendingMachine
                             Console.WriteLine("Invalid Selection.");
                             break;
                     }
-                        }
                 }
+            }
             else
             {
                 Console.WriteLine("Incorrect PIN. Access Denied.");
             }
         }
+
         static void SearchSnack()
         {
             Console.WriteLine("Enter the snack name you want to search for: ");
             string name = Console.ReadLine();
-            string result = VendingProcess.SearchSnack(name);
+            string result = vending.SearchItem(name);
             Console.WriteLine(result);
-        } //SEARCH
-        static void RemoveSnack()   //DELETE
+        }
+
+        static void RemoveSnack()
         {
-            Console.WriteLine("**************************************");
             Console.WriteLine("Enter the item you want to remove from the inventory: ");
             string name = Console.ReadLine();
 
@@ -104,7 +109,7 @@ namespace FoodVendingMachine
 
             if (confirm == "yes" || confirm == "y")
             {
-                if (VendingProcess.DeleteSnack(name))
+                if (vending.DeleteItem(name))
                 {
                     Console.WriteLine($"{name} has been removed from the inventory.");
                     DisplayInventory();
@@ -115,7 +120,8 @@ namespace FoodVendingMachine
                 }
             }
         }
-        static void AddSnack()    //CREATE OR ADD
+
+        static void AddSnack()
         {
             Console.WriteLine("Enter snack name: ");
             string name = Console.ReadLine();
@@ -133,7 +139,8 @@ namespace FoodVendingMachine
                 Console.WriteLine("Invalid quantity.");
                 return;
             }
-            if (VendingProcess.AddSnack(name, price, quantity))
+
+            if (vending.AddNewItem(name, price, quantity))
             {
                 Console.WriteLine($"Successfully added {name} (PHP {price:F2}, Qty: {quantity}) to the menu.");
                 DisplayInventory();
@@ -143,6 +150,7 @@ namespace FoodVendingMachine
                 Console.WriteLine("Failed to add snack. Check your input.");
             }
         }
+
         static void RunCustomerMode()
         {
             Console.WriteLine("Please Insert your Card.");
@@ -150,6 +158,7 @@ namespace FoodVendingMachine
             {
                 Console.WriteLine("Incorrect PIN. Try Again.");
             }
+
             bool continueTransaction = true;
             while (continueTransaction)
             {
@@ -157,39 +166,34 @@ namespace FoodVendingMachine
                 Console.WriteLine("Would you like to do another action? (Yes or No): ");
                 string answer = Console.ReadLine().ToLower();
                 continueTransaction = (answer == "yes" || answer == "y");
-               
+
                 if (!continueTransaction)
-                {
-                    Console.WriteLine("Ending session adn returning to Main Menu.....");
-                    
-                    
-                }
-                Console.WriteLine("*********************************");
+                    Console.WriteLine("Ending session and returning to Main Menu...");
             }
         }
+
         static bool AuthenticateUser()
         {
             Console.WriteLine("Enter PIN: ");
             if (int.TryParse(Console.ReadLine(), out int userPIN))
-            {
-                return VendingProcess.ValidatePIN(userPIN);
-            }
+                return vending.ValidatePIN(userPIN);
             return false;
         }
+
         static void ShowMainCustomerMenu()
         {
-            Console.WriteLine("Snacks Menu:");
             Console.WriteLine("[1] Snack Menu\n[2] Check Balance\n[3] Add Funds\n[4] Cancel Transaction");
             Console.Write("Choose an option: ");
             string choice = Console.ReadLine();
             Console.WriteLine("****************************************");
+
             switch (choice)
             {
                 case "1":
                     ShowSnackMenu();
                     break;
                 case "2":
-                    Console.WriteLine($"Your Current Balance is: PHP {VendingProcess.GetBalance():F2}");
+                    Console.WriteLine($"Your Current Balance is: PHP {vending.GetBalance():F2}");
                     break;
                 case "3":
                     HandleAddingFunds();
@@ -201,117 +205,84 @@ namespace FoodVendingMachine
                     Console.WriteLine("Invalid input. Please try again.");
                     break;
             }
-        } //READ
+        }
+
         static void ShowSnackMenu()
         {
             Console.WriteLine("Snacks and Drinks:");
-            string[] inventory = VendingProcess.GetInventory();
+            string[] inventory = vending.GetInventoryDetails();
+
             for (int i = 0; i < inventory.Length; i++)
             {
                 Console.WriteLine($"[{i + 1}] {inventory[i]}");
             }
 
-            Console.WriteLine("Enter the item number (or type 'exit' to cancel):");
-            string choice = Console.ReadLine();
+            Console.WriteLine("Enter the snack name to buy (or type 'exit' to cancel):");
+            string name = Console.ReadLine();
 
-            if (choice.ToLower() == "exit")
-            {
-                Console.WriteLine("Returning to main menu...");
+            if (name.ToLower() == "exit")
                 return;
-            }
 
-            string[] itemDetails = VendingProcess.GetItemDetails(choice);
-
-            if (itemDetails != null)
+            if (vending.PurchaseItem(name))
             {
-                string itemName = itemDetails[0];
-                if (double.TryParse(itemDetails[1], out double price))
-                {
-                    if (VendingProcess.IsItemInStock(itemName))
-                    {
-                        Console.WriteLine($"You selected: {itemName} - PHP {price:F2}");
-                        HandlePurchase(itemName, price);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Item is out of stock.");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("Error reading price.");
-                }
+                Console.WriteLine($"Successfully purchased {name}.");
+                Console.WriteLine($"Remaining Balance: PHP {vending.GetBalance():F2}");
             }
             else
             {
-                Console.WriteLine("Invalid input. Please try again.");
+                Console.WriteLine("Purchase failed. Check funds or stock.");
             }
         }
-        static void HandlePurchase(string itemNames, double price)
-        {
-            var (success, remainingBalance) = VendingProcess.ProcessPurchase(itemNames, price);
-            if (success)
-            {
-                Console.WriteLine($"You purchased {itemNames} for PHP {price:F2}.");
-                Console.WriteLine($"Remaining Balance: PHP {remainingBalance:F2}");
-            }
-            else
-            {
-                Console.WriteLine("Insufficient funds or item out of stock.");
-            }
-        }
+
         static void HandleAddingFunds()
         {
             Console.WriteLine("Enter amount to add: ");
             if (double.TryParse(Console.ReadLine(), out double amount))
             {
-                if (VendingProcess.AddFunds(amount))
+                if (vending.AddFunds(amount))
                 {
-                    Console.WriteLine($"PHP{amount:F2} added successfully.");
-                    Console.WriteLine($"New Balance: PHP{VendingProcess.GetBalance():F2}");
+                    Console.WriteLine($"PHP {amount:F2} added successfully.");
+                    Console.WriteLine($"New Balance: PHP {vending.GetBalance():F2}");
                 }
                 else
                 {
-                    Console.WriteLine("Invalid amount. Please enter a positive number.");
+                    Console.WriteLine("Invalid amount. Must be positive.");
                 }
             }
             else
             {
-                Console.WriteLine("Invalid input. Please enter a valid number.");
+                Console.WriteLine("Invalid input. Enter a valid number.");
             }
         }
-        static void RestockItems() //UPDATE
+
+        static void RestockItems()
         {
-            Console.WriteLine("*************************************");
             Console.WriteLine("Enter item name to restock: ");
-            string itemNames = Console.ReadLine();
+            string name = Console.ReadLine();
             Console.WriteLine("Enter quantity to add: ");
             if (int.TryParse(Console.ReadLine(), out int quantity) && quantity > 0)
             {
-                if (VendingProcess.RestockItems(itemNames, quantity))
+                if (vending.RestockItem(name, quantity))
                 {
-                    Console.WriteLine($"Restocked {quantity} items of {itemNames}.");
-                    Console.WriteLine("Successfully Added Stocks....");
+                    Console.WriteLine($"Restocked {quantity} units of {name}.");
                 }
                 else
                 {
-                    Console.WriteLine("Invalid item name or quantity.");
+                    Console.WriteLine("Restock failed. Item may not exist.");
                 }
             }
             else
             {
-                Console.WriteLine("Invalid input. Please enter a valid quantity.");
+                Console.WriteLine("Invalid quantity.");
             }
         }
-        static void DisplayInventory()  //READ
+
+        static void DisplayInventory()
         {
-            Console.WriteLine("Current Stocks:");
-            string[] inventory = VendingProcess.GetInventory();
+            Console.WriteLine("Current Inventory:");
+            var inventory = vending.GetInventoryDetails();
             foreach (var item in inventory)
-            {
                 Console.WriteLine(item);
-            }
         }
-       
     }
 }
