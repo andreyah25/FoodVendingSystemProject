@@ -1,87 +1,79 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VendingCommon;
 
 namespace FoodVendingData
 {
-    public class InMemoryFoodVendingDataService : IFoodVendingDataService
+    public class InMemoryFoodDataService : IFoodVendingDataService
     {
-        private List<VendingItem> item= new List<VendingItem>();
-        public InMemoryFoodVendingDataService()
+        private readonly List<SnackItem> inventory = new List<SnackItem>
         {
-            ListOfAvailableItems();
-        }
-        private void ListOfAvailableItems()
+            new SnackItem { Name = "Piattos", Price = 35.25, Quantity = 10 },
+            new SnackItem { Name = "Vcut", Price = 49.25, Quantity = 8 },
+            new SnackItem { Name = "Cheesy", Price = 45.00, Quantity = 15 },
+            new SnackItem { Name = "Pic A", Price = 36.50, Quantity = 20 }
+        };
+
+        public List<SnackItem> LoadItems()
         {
-            VendingItem item1 = new VendingItem();
-            item1.Name = "Piattos";
-            item1.Price = 30.00;
-            item1.Quantity = 8;
-
-            item.Add(item1);
-
-            VendingItem item2 = new VendingItem
+            return inventory.Select(item => new SnackItem
             {
-                Name = "Vcut",
-                Price = 38.25,
-                Quantity = 5
-            };
-            item.Add(item2);
-
-            item.Add(new VendingItem
-            {
-                Name = "Cheesy",
-                Price = 40.99,
-                Quantity = 13
-            });
-
-            item.Add(new VendingItem
-            {
-                Name = "Pic A",
-                Price = 50.88,
-                Quantity = 11
-            });
-
-
-
-        }
-        public List<VendingItem> GetInventory()
-        {
-            return item;
+                Name = item.Name,
+                Price = item.Price,
+                Quantity = item.Quantity
+            }).ToList();
         }
 
-        public void AddSnack(VendingItem vendingItem)
+        public SnackItem GetItemByName(string name)
         {
+            return inventory.FirstOrDefault(item => item.Name.ToLower() == name.ToLower());
+        }
+
+        public bool AddItem(SnackItem item)
+        {
+            if (string.IsNullOrWhiteSpace(item.Name) || item.Price <= 0 || item.Quantity <= 0)
+                return false;
+
+
+            if (inventory.Any(i => i.Name.Equals(item.Name, StringComparison.OrdinalIgnoreCase)))
+                return false; // Item already exists
+
             
+
+            inventory.Add(item);
+            return true;
         }
 
-        public void RemoveItem(VendingItem vendingItem)
+        public bool RemoveItem(string name)
         {
-            
+            var item = GetItemByName(name);
+            if (item == null) return false;
+
+            inventory.Remove(item);
+            return true;
         }
 
-        public void UpdateQuantity(VendingItem vendingItem)
+        public bool UpdateItemQuantity(string name, int deltaQuantity)
         {
-           for (int i = 0; i < item.Count; i++)
-            {
-                if (item[i].Name == vendingItem.Name)
-                {
-                    item[i].Quantity = vendingItem.Quantity;
-                }
-            }
-        }
-        bool IFoodVendingDataService.RemoveItem(VendingItem vendingItem)
-        {
-            throw new NotImplementedException();
+            var item = GetItemByName(name);
+            if (item == null) return false;
+
+            int newQty = item.Quantity + deltaQuantity;
+            if (newQty < 0) return false;
+
+            item.Quantity = newQty;
+            return true;
         }
 
-        string IFoodVendingDataService.SearchItem(string name)
+        public List<SnackItem> GetAllItems()
         {
-            throw new NotImplementedException();
+            return LoadItems();
         }
+
+        public bool AddNewItem(SnackItem item)
+        {
+            return AddItem(item);
+        }
+
     }
-
 }

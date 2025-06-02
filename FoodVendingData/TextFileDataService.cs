@@ -1,115 +1,119 @@
-﻿using VendingCommon;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using VendingCommon;
 
 namespace FoodVendingData
 {
     public class TextFileDataService : IFoodVendingDataService
     {
-     string filePath = "inventory.txt";
-     List<VendingItem> items = new List<VendingItem>();
+        private readonly string filePath;
 
-        public TextFileDataService()
+        public TextFileDataService(string filePath = "inventory.txt")
         {
-            LoadFromFile();
+            this.filePath = filePath;
+
+          
+            if (!File.Exists(this.filePath))
+                File.WriteAllText(this.filePath, string.Empty);
         }
 
-        private void LoadFromFile()
+        public List<SnackItem> LoadItems()
         {
-            items.Clear();
-                var lines = File.ReadAllLines(filePath);
-                foreach (var line in lines)
+            var items = new List<SnackItem>();
+
+            var lines = File.ReadAllLines(filePath);
+            foreach (var line in lines)
+            {
+                if (string.IsNullOrWhiteSpace(line))
+                    continue;
+
+                var parts = line.Split('|');
+                if (parts.Length != 3)
+                    continue;
+
+                string name = parts[0];
+                if (!double.TryParse(parts[1], out double price))
+                    continue;
+                if (!int.TryParse(parts[2], out int qty))
+                    continue;
+
+                items.Add(new SnackItem
                 {
-                    var parts = line.Split('|');
-
-                    if (parts.Length == 3 &&
-                        double.TryParse(parts[1], out double price) &&
-                        int.TryParse(parts[2], out int quantity))
-                    {
-                        items.Add(new VendingItem
-                        {
-                            Name = parts[0],
-                            Price = price,
-                            Quantity = quantity
-                        });
-                    }
-                }
-            if (items.Count == 0)
-            {
-                items.Add(new VendingItem { Name = "Piattos", Price = 35.00, Quantity = 8 });
-                items.Add(new VendingItem { Name = "Vcut", Price = 38.25, Quantity = 5 });
-                items.Add(new VendingItem { Name = "Cheesy", Price = 40.99, Quantity = 13 });
-                items.Add(new VendingItem { Name = "Pic A", Price = 50.88, Quantity = 11 });
-                WriteToFile();
+                    Name = name,
+                    Price = price,
+                    Quantity = qty
+                });
             }
-        }
 
-        private void WriteToFile()
-        {
-            var lines = new string[items.Count];
-            for (int i = 0; i < items.Count; i++)
-            {
-                lines[i] = $"{items[i].Name}|{items[i].Price}|{items[i].Quantity}";
-            }
-            File.WriteAllLines(filePath, lines);
-        }
-
-
-        public int FindIndex(VendingItem item)
-        {
-            for (int i = 0; i < items.Count; i++)
-            {
-                if (items[i].Name.Equals(item.Name, StringComparison.OrdinalIgnoreCase))
-                {
-                    return i;
-                }
-            }
-            return -1;
-        }
-        public List<VendingItem> GetInventory()
-        {
             return items;
         }
-        public void AddSnack(VendingItem item)
+
+        public SnackItem GetItemByName(string name)
         {
+            var allItems = LoadItems();
+            return allItems.FirstOrDefault(i => i.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public bool AddItem(SnackItem item)
+        {
+            if (string.IsNullOrWhiteSpace(item.Name) || item.Price <= 0 || item.Quantity <= 0)
+                return false;
+
+            var items = LoadItems();
+
+            if (items.Any(i => i.Name.Equals(item.Name, StringComparison.OrdinalIgnoreCase)))
+                return false;
+
             items.Add(item);
-            WriteToFile();
+            return SaveItems(items);
         }
 
-        void UpdateQuantity(VendingItem item)
+        public bool RemoveItem(string name)
         {
-            int index = FindIndex(item);
-            if (index != -1)
+            var items = LoadItems();
+            var item = items.FirstOrDefault(i => i.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            if (item == null)
+                return false;
+
+            items.Remove(item);
+            return SaveItems(items);
+        }
+
+        public bool UpdateItemQuantity(string name, int deltaQuantity)
+        {
+            var items = LoadItems();
+            var item = items.FirstOrDefault(i => i.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            if (item == null)
+                return false;
+
+            int newQty = item.Quantity + deltaQuantity;
+            if (newQty < 0)
+                return false;
+
+            item.Quantity = newQty;
+            return SaveItems(items);
+        }
+
+        
+        public List<SnackItem> GetAllItems() => LoadItems();
+
+        public bool AddNewItem(SnackItem item) => AddItem(item);
+
+       
+        private bool SaveItems(List<SnackItem> items)
+        {
+            try
             {
-                items[index].Price = item.Price;
-                items[index].Quantity = item.Quantity;
-                WriteToFile();
+                var lines = items.Select(i => $"{i.Name}|{i.Price}|{i.Quantity}");
+                File.WriteAllLines(filePath, lines);
+                return true;
             }
-
-        }
-
-        bool IFoodVendingDataService.RemoveItem(VendingItem item) 
-        {
-            int index = -1;
-            if (index != -1)
+            catch
             {
-                items.RemoveAt(index);
-                WriteToFile();
+                return false;
             }
-            return false;
-        }
-
-        public string SearchItem(string name) 
-        {
-            var found = items.Find(i => i.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
-            return found != null
-                ? $"{found.Name} - PHP {found.Price:F2} (Stock: {found.Quantity})"
-                : "Item not found.";
-        }
-      void IFoodVendingDataService.UpdateQuantity(VendingItem item)
-        {
-           
         }
     }
 }

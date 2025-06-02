@@ -1,0 +1,16 @@
+C:\Users\63955\OneDrive\Documents\FoodVendingProject\FoodVendingSystem\FoodVendingData\bin\Debug\net8.0\FoodVendingData.deps.json
+C:\Users\63955\OneDrive\Documents\FoodVendingProject\FoodVendingSystem\FoodVendingData\bin\Debug\net8.0\FoodVendingData.dll
+C:\Users\63955\OneDrive\Documents\FoodVendingProject\FoodVendingSystem\FoodVendingData\bin\Debug\net8.0\FoodVendingData.pdb
+C:\Users\63955\OneDrive\Documents\FoodVendingProject\FoodVendingSystem\FoodVendingData\bin\Debug\net8.0\VendingCommon.dll
+C:\Users\63955\OneDrive\Documents\FoodVendingProject\FoodVendingSystem\FoodVendingData\bin\Debug\net8.0\VendingCommon.pdb
+C:\Users\63955\OneDrive\Documents\FoodVendingProject\FoodVendingSystem\FoodVendingData\obj\Debug\net8.0\FoodVendingData.csproj.AssemblyReference.cache
+C:\Users\63955\OneDrive\Documents\FoodVendingProject\FoodVendingSystem\FoodVendingData\obj\Debug\net8.0\FoodVendingData.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\63955\OneDrive\Documents\FoodVendingProject\FoodVendingSystem\FoodVendingData\obj\Debug\net8.0\FoodVendingData.AssemblyInfoInputs.cache
+C:\Users\63955\OneDrive\Documents\FoodVendingProject\FoodVendingSystem\FoodVendingData\obj\Debug\net8.0\FoodVendingData.AssemblyInfo.cs
+C:\Users\63955\OneDrive\Documents\FoodVendingProject\FoodVendingSystem\FoodVendingData\obj\Debug\net8.0\FoodVendingData.csproj.CoreCompileInputs.cache
+C:\Users\63955\OneDrive\Documents\FoodVendingProject\FoodVendingSystem\FoodVendingData\obj\Debug\net8.0\FoodVendingData.sourcelink.json
+C:\Users\63955\OneDrive\Documents\FoodVendingProject\FoodVendingSystem\FoodVendingData\obj\Debug\net8.0\FoodVend.9547DBCD.Up2Date
+C:\Users\63955\OneDrive\Documents\FoodVendingProject\FoodVendingSystem\FoodVendingData\obj\Debug\net8.0\FoodVendingData.dll
+C:\Users\63955\OneDrive\Documents\FoodVendingProject\FoodVendingSystem\FoodVendingData\obj\Debug\net8.0\refint\FoodVendingData.dll
+C:\Users\63955\OneDrive\Documents\FoodVendingProject\FoodVendingSystem\FoodVendingData\obj\Debug\net8.0\FoodVendingData.pdb
+C:\Users\63955\OneDrive\Documents\FoodVendingProject\FoodVendingSystem\FoodVendingData\obj\Debug\net8.0\ref\FoodVendingData.dll

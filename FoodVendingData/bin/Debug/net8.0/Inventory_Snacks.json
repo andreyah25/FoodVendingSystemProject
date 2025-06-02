@@ -1,0 +1,22 @@
+[
+{
+ "Name" : "Piattos";
+ "Price" : "35.00";
+ "Quantity" : 8;
+},
+{
+ "Name" : "Vcut";
+ "Price" : 38.25;
+ "Quantity" : 5;
+},
+{
+ "Name" : "Cheesy";
+ "Price" : 40.99;
+ "Quantity" : 13;
+},
+{
+ "Name" : "Pic A";
+ "Price" : 50.88;
+ "Quantity" : 11;
+}
+]
