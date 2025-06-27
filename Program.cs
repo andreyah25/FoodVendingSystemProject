@@ -1,4 +1,5 @@
-﻿using VendingSystem_BusinessDataLogic;
+﻿using FoodVending_BusinessLogic;
+using VendingCommon;
 using System;
 
 namespace FoodVendingMachine
@@ -6,12 +7,10 @@ namespace FoodVendingMachine
     public class Program
     {
         static VendingProcess vending = new VendingProcess();
-
         static void Main(string[] args)
         {
             RunMachine();
         }
-
         static void RunMachine()
         {
             while (true)
@@ -19,10 +18,9 @@ namespace FoodVendingMachine
                 SelectUser();
             }
         }
-
         static void SelectUser()
         {
-            Console.WriteLine("WELCOME....");
+            Console.WriteLine("*******WELCOME TO THE VENDING MACHINE******");
             Console.WriteLine("Select a user: [1] Admin | [2] Customer | [0] EXIT");
             string user = Console.ReadLine();
 
@@ -56,7 +54,7 @@ namespace FoodVendingMachine
                     Console.WriteLine("********************************************");
                     Console.WriteLine("Admin Menu: ");
                     Console.WriteLine("[1] Restock Items\n[2] View Inventory\n[3] Add Snacks\n[4] Remove Snacks\n[5] Search Item\n[6] Exit");
-                    string choice = Console.ReadLine();
+                    string choice = Console.ReadLine()!;
 
                     switch (choice)
                     {
@@ -90,7 +88,6 @@ namespace FoodVendingMachine
                 Console.WriteLine("Incorrect PIN. Access Denied.");
             }
         }
-
         static void SearchSnack()
         {
             Console.WriteLine("Enter the snack name you want to search for: ");
@@ -98,7 +95,6 @@ namespace FoodVendingMachine
             string result = vending.SearchItem(name);
             Console.WriteLine(result);
         }
-
         static void RemoveSnack()
         {
             Console.WriteLine("Enter the item you want to remove from the inventory: ");
@@ -123,31 +119,39 @@ namespace FoodVendingMachine
 
         static void AddSnack()
         {
-            Console.WriteLine("Enter snack name: ");
-            string name = Console.ReadLine();
+            Console.Write("Enter snack name: ");
+            string name = Console.ReadLine()?.Trim();
 
-            Console.WriteLine("Enter price: ");
-            if (!double.TryParse(Console.ReadLine(), out double price))
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                Console.WriteLine("Snack name cannot be empty.");
+                return;
+            }
+
+            Console.Write("Enter price: ");
+            if (!double.TryParse(Console.ReadLine(), out double price) || price <= 0)
             {
                 Console.WriteLine("Invalid price.");
                 return;
             }
 
-            Console.WriteLine("Enter quantity to add: ");
-            if (!int.TryParse(Console.ReadLine(), out int quantity))
+            Console.Write("Enter quantity to add: ");
+            if (!int.TryParse(Console.ReadLine(), out int quantity) || quantity <= 0)
             {
                 Console.WriteLine("Invalid quantity.");
                 return;
             }
 
-            if (vending.AddNewItem(name, price, quantity))
+            bool success = vending.AddNewItem(name, price, quantity);
+
+            if (success)
             {
                 Console.WriteLine($"Successfully added {name} (PHP {price:F2}, Qty: {quantity}) to the menu.");
                 DisplayInventory();
             }
             else
             {
-                Console.WriteLine("Failed to add snack. Check your input.");
+                Console.WriteLine("Failed to add snack. Check if the item already exists or your input is valid.");
             }
         }
 
@@ -164,7 +168,7 @@ namespace FoodVendingMachine
             {
                 ShowMainCustomerMenu();
                 Console.WriteLine("Would you like to do another action? (Yes or No): ");
-                string answer = Console.ReadLine().ToLower();
+                string answer = Console.ReadLine().ToLower()!;
                 continueTransaction = (answer == "yes" || answer == "y");
 
                 if (!continueTransaction)
@@ -217,20 +221,40 @@ namespace FoodVendingMachine
                 Console.WriteLine($"[{i + 1}] {inventory[i]}");
             }
 
-            Console.WriteLine("Enter the snack name to buy (or type 'exit' to cancel):");
-            string name = Console.ReadLine();
+            Console.WriteLine("Enter the number to buy (or type 'exit' to cancel):");
+            string input = Console.ReadLine();
 
-            if (name.ToLower() == "exit")
+            if (input.ToLower() == "exit")
                 return;
+            string selectedSnackName = null;
 
-            if (vending.PurchaseItem(name))
+            if (int.TryParse(input, out int index))
             {
-                Console.WriteLine($"Successfully purchased {name}.");
-                Console.WriteLine($"Remaining Balance: PHP {vending.GetBalance():F2}");
+                if (index >= 1 && index <= inventory.Length)
+                {
+                    string[] parts = inventory[index - 1].Split('-');
+                    selectedSnackName = parts[0].Trim();
+                }
+                else
+                {
+                    Console.WriteLine("Invalid number selection.");
+                    return;
+                }
             }
             else
             {
-                Console.WriteLine("Purchase failed. Check funds or stock.");
+                selectedSnackName = input.Trim();
+
+            }
+            if (vending.PurchaseItem(selectedSnackName))
+            {
+                Console.WriteLine($"Successfully purchased {selectedSnackName}.");
+                Console.WriteLine($"Remaining Balance: PHP {vending.GetBalance():F2}");
+
+            }
+            else
+            {
+                Console.WriteLine("Purchase failed. Check funds or stocks.");
             }
         }
 
