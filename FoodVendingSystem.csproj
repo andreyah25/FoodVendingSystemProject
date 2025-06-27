@@ -11,23 +11,14 @@
 		<!-- Remove compile/include of code files from referenced projects to avoid duplication -->
 		<Compile Remove="FoodVendingData\**" />
 		<Compile Remove="FoodVending_BusinessDataLogic\**" />
-		<Compile Remove="VendingDekstopWindows\**" />
-		<Compile Remove="VendingForm1\**" />
 		<Compile Remove="VendingSystem_BusinessDataLogic\**" />
 		<Compile Remove="VendingCommon\**" />
-		<Compile Remove="WebApplication1\**" />
 		<EmbeddedResource Remove="FoodVendingData\**" />
 		<EmbeddedResource Remove="FoodVending_BusinessDataLogic\**" />
 		<EmbeddedResource Remove="VendingCommon\**" />
-		<EmbeddedResource Remove="VendingDekstopWindows\**" />
-		<EmbeddedResource Remove="VendingForm1\**" />
-		<EmbeddedResource Remove="WebApplication1\**" />
 		<None Remove="FoodVendingData\**" />
 		<None Remove="FoodVending_BusinessDataLogic\**" />
 		<None Remove="VendingCommon\**" />
-		<None Remove="VendingDekstopWindows\**" />
-		<None Remove="VendingForm1\**" />
-		<None Remove="WebApplication1\**" />
 	</ItemGroup>
 
 	<ItemGroup>
