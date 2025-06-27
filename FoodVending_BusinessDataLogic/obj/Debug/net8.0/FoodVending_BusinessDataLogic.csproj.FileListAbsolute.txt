@@ -1,0 +1,12 @@
+C:\Users\63955\OneDrive\Documents\FoodVendingProject\FoodVendingSystem\FoodVending_BusinessDataLogic\bin\Debug\net8.0\FoodVending_BusinessDataLogic.deps.json
+C:\Users\63955\OneDrive\Documents\FoodVendingProject\FoodVendingSystem\FoodVending_BusinessDataLogic\bin\Debug\net8.0\FoodVending_BusinessDataLogic.dll
+C:\Users\63955\OneDrive\Documents\FoodVendingProject\FoodVendingSystem\FoodVending_BusinessDataLogic\bin\Debug\net8.0\FoodVending_BusinessDataLogic.pdb
+C:\Users\63955\OneDrive\Documents\FoodVendingProject\FoodVendingSystem\FoodVending_BusinessDataLogic\obj\Debug\net8.0\FoodVending_BusinessDataLogic.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\63955\OneDrive\Documents\FoodVendingProject\FoodVendingSystem\FoodVending_BusinessDataLogic\obj\Debug\net8.0\FoodVending_BusinessDataLogic.AssemblyInfoInputs.cache
+C:\Users\63955\OneDrive\Documents\FoodVendingProject\FoodVendingSystem\FoodVending_BusinessDataLogic\obj\Debug\net8.0\FoodVending_BusinessDataLogic.AssemblyInfo.cs
+C:\Users\63955\OneDrive\Documents\FoodVendingProject\FoodVendingSystem\FoodVending_BusinessDataLogic\obj\Debug\net8.0\FoodVending_BusinessDataLogic.csproj.CoreCompileInputs.cache
+C:\Users\63955\OneDrive\Documents\FoodVendingProject\FoodVendingSystem\FoodVending_BusinessDataLogic\obj\Debug\net8.0\FoodVending_BusinessDataLogic.sourcelink.json
+C:\Users\63955\OneDrive\Documents\FoodVendingProject\FoodVendingSystem\FoodVending_BusinessDataLogic\obj\Debug\net8.0\FoodVending_BusinessDataLogic.dll
+C:\Users\63955\OneDrive\Documents\FoodVendingProject\FoodVendingSystem\FoodVending_BusinessDataLogic\obj\Debug\net8.0\refint\FoodVending_BusinessDataLogic.dll
+C:\Users\63955\OneDrive\Documents\FoodVendingProject\FoodVendingSystem\FoodVending_BusinessDataLogic\obj\Debug\net8.0\FoodVending_BusinessDataLogic.pdb
+C:\Users\63955\OneDrive\Documents\FoodVendingProject\FoodVendingSystem\FoodVending_BusinessDataLogic\obj\Debug\net8.0\ref\FoodVending_BusinessDataLogic.dll

@@ -1,117 +1,84 @@
 ﻿using VendingCommon;
 using FoodVendingData;
 using System;
-using System.Collections.Generic;
+using System.Linq;
+using VendingDataService;
 
-namespace VendingSystem_BusinessDataLogic
+namespace FoodVending_BusinessLogic
 {
-    public class VendingProcess
+    public class VendingProcess : TextFileDataService
     {
-        private IFoodVendingDataService dataService;
-        private double cardBalance = 100.00;
-        public double GetBalance() => cardBalance;
+        private readonly TextFileDataService _dataService;
+        private double _balance = 120.25;
+        private readonly int _adminPIN = 0525;
+        private readonly int _userPIN = 2005;
 
         public VendingProcess()
         {
-            dataService = new TextFileDataService();
+
+            //_dataService = new InMemoryFoodDataService();
+             _dataService = new TextFileDataService("inventory.txt");
+            //_dataService = new JsonProductDataService("inventory.json");
+            //_dataService = new DBFoodVendingDataService();
         }
 
-        public bool ValidateAdminPIN(int adminPIN) => adminPIN == 1234;
+        public bool ValidatePIN(int pin) => pin == _userPIN;
+        public bool ValidateAdminPIN(int pin) => pin == _adminPIN;
+        public double GetBalance() => _balance;
 
-        public bool ValidatePIN(int userPIN) => userPIN == 2005;
-
-        public bool IsItemInStock(string name)
+        public bool AddFunds(double amount)
         {
-            var inventory = dataService.GetInventory();
-            var item = inventory.Find(i => i.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
-            return item != null && item.Quantity > 0;
+            if (amount <= 0) return false;
+            _balance += amount;
+            return true;
         }
 
         public string[] GetInventoryDetails()
         {
-            var inventory = dataService.GetInventory();
-            if (inventory.Count == 0)
-                return new[] { "No items available." };
-
-            var details = new List<string>();
-            foreach (var item in inventory)
-            {
-                details.Add($"{item.Name} - PHP {item.Price:F2} (Stock: {item.Quantity})");
-            }
-            return details.ToArray();
-        }
-
-        public bool RestockItem(string name, int quantity)
-        {
-            var inventory = dataService.GetInventory();
-            var item = inventory.Find(i => i.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
-
-            if (item != null && quantity > 0)
-            {
-                item.Quantity += quantity;
-                dataService.UpdateQuantity(item);
-                return true;
-            }
-            return false;
+            var items = _dataService.LoadItems();
+            return items.Select(i => $"{i.Name} - PHP {i.Price:F2} - Qty: {i.Quantity}").ToArray();
         }
 
         public bool AddNewItem(string name, double price, int quantity)
         {
-            if (!string.IsNullOrWhiteSpace(name) && price > 0 && quantity > 0)
-            {
-                var existing = dataService.GetInventory().Find(i => i.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
-                if (existing == null)
-                {
-                    var newItem = new VendingItem { Name = name, Price = price, Quantity = quantity };
-                    dataService.AddSnack(newItem);
-                    return true;
-                }
-            }
-            return false;
+            if (string.IsNullOrWhiteSpace(name) || price <= 0 || quantity < 0)
+                return false;
+
+            var item = new SnackItem { Name = name.Trim(), Price = price, Quantity = quantity };
+            return _dataService.AddItem(item);
         }
 
         public bool DeleteItem(string name)
         {
-            var inventory = dataService.GetInventory();
-            var item = inventory.Find(i => i.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
-            if (item != null)
-            {
-                dataService.RemoveItem(item);
-                return true;
-            }
-            return false;
+            return _dataService.RemoveItem(name.Trim());
         }
 
         public string SearchItem(string name)
         {
-            return dataService.SearchItem(name);
+            var item = _dataService.GetItemByName(name.Trim());
+            return item != null
+                ? $"Item found: {item.Name} - PHP {item.Price:F2} - Qty: {item.Quantity}"
+                : "Item not found.";
+        }
+
+        public bool RestockItem(string name, int quantity)
+        {
+            if (quantity <= 0) return false;
+            return _dataService.UpdateItemQuantity(name.Trim(), quantity);
         }
 
         public bool PurchaseItem(string name)
         {
-            var inventory = dataService.GetInventory();
-            var item = inventory.Find(i => i.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            var item = _dataService.GetItemByName(name.Trim());
+            if (item == null || item.Quantity <= 0 || item.Price > _balance)
+                return false;
 
-            if (item != null && item.Quantity > 0 && cardBalance >= item.Price)
-            {
-                item.Quantity--;
-                cardBalance -= item.Price;
-                dataService.UpdateQuantity(item);
-                return true;
-            }
+            bool updated = _dataService.UpdateItemQuantity(name.Trim(), -1);
+            if (!updated)
+                return false;
 
-            return false;
-        }
-
-
-        public bool AddFunds(double amount)
-        {
-            if (amount > 0)
-            {
-                cardBalance += amount;
-                return true;
-            }
-            return false;
+            _balance -= item.Price;
+            return true;
         }
     }
 }

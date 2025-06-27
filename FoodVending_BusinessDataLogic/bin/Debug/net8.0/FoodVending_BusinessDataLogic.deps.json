@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "FoodVending_BusinessDataLogic/1.0.0": {
+        "runtime": {
+          "FoodVending_BusinessDataLogic.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "FoodVending_BusinessDataLogic/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
